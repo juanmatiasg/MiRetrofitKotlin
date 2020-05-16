@@ -37,15 +37,15 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
         val list = service.getAllPost()
         list.enqueue(object :Callback<List<Post>>{
             override fun onFailure(call: retrofit2.Call<List<Post>>, t: Throwable) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@MainActivity,"No hay conexion",Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(
                 call: retrofit2.Call<List<Post>>,
                 response: Response<List<Post>>
             ) {
-                val call = response.body() as MutableList<Post>
-                adapterPost.AdapterPost(call,this@MainActivity)
+                val lista = response.body() as MutableList<Post>
+                adapterPost.AdapterPost(lista,this@MainActivity)
                 mRecyclerView.adapter=adapterPost
             }
         })
@@ -68,12 +68,12 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
     }
 
 
-    fun searchById(query: String) {
+    fun searchById(query:String) {
         val service = getRetrofit().create(APIService::class.java)
         val post = service.getPostById(query)
         post.enqueue(object : Callback<Post> {
             override fun onFailure(call: retrofit2.Call<Post>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "No hay conexion", Toast.LENGTH_SHORT).show()
+                getLista()
             }
 
             override fun onResponse(call: retrofit2.Call<Post>, response: Response<Post>) {
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
 
                 }
                 else{
-                    Toast.makeText(this@MainActivity,"No se ha cargado los datos",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity,"No hay conexion",Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -110,6 +110,8 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
         searchById(newText)
         return true
     }
+
+
 
 
 
