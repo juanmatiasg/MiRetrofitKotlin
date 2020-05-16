@@ -28,6 +28,28 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
         setContentView(R.layout.activity_main)
         searchView.setOnQueryTextListener(this)
         setupRecyclerView()
+        getLista()
+
+    }
+
+    fun getLista() { /*Se cargo la lista*/
+        val service = getRetrofit().create(APIService::class.java)
+        val list = service.getAllPost()
+        list.enqueue(object :Callback<List<Post>>{
+            override fun onFailure(call: retrofit2.Call<List<Post>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onResponse(
+                call: retrofit2.Call<List<Post>>,
+                response: Response<List<Post>>
+            ) {
+                val call = response.body() as MutableList<Post>
+                adapterPost.AdapterPost(call,this@MainActivity)
+                mRecyclerView.adapter=adapterPost
+            }
+        })
+
 
     }
 
@@ -42,6 +64,7 @@ class MainActivity : AppCompatActivity(), OnQueryTextListener {
         mRecyclerView = findViewById(R.id.recyclerView)
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
+
     }
 
 
